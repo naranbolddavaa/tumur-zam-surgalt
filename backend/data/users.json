@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "email": "admin@railway.mn",
+    "password": "$2a$10$IGzMHivxy47Cy.w9Rih0KOdRUGQlDRo2AOzYWCiso2RMk6ieoUHTK",
+    "lastName": "Админ",
+    "firstName": "Систем",
+    "org": "ТЗС",
+    "role": "admin",
+    "blocked": 0,
+    "points": 0,
+    "correctAnswers": 0,
+    "totalAnswers": 0,
+    "chaptersCompleted": [],
+    "registeredAt": "2026-06-07T07:53:04.180Z"
+  }
+]
