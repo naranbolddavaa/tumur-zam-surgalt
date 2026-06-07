@@ -1,16 +1,14 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface User {
-  id: number; email: string; lastName: string; firstName: string;
-  org: string; role: string; points: number;
-}
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { api } from '../lib/api';
+import type { User } from '../types';
 
 interface AuthCtx {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<string | null>;
-  register: (data: any) => Promise<string | null>;
+  register: (data: { lastName: string; firstName: string; org: string; email: string; password: string }) => Promise<string | null>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthCtx>({} as AuthCtx);
@@ -20,40 +18,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
-      .then(r => r.json()).then(d => { if (d.user) setUser(d.user); setLoading(false); })
-      .catch(() => setLoading(false));
+  const refreshUser = useCallback(async () => {
+    try {
+      const d = await api.auth.me();
+      setUser(d?.user || null);
+    } catch { setUser(null); }
+    setLoading(false);
   }, []);
 
+  useEffect(() => { refreshUser(); }, [refreshUser]);
+
   async function login(email: string, password: string) {
-    const r = await fetch('/api/auth/login', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const d = await r.json();
-    if (d.error) return d.error;
-    localStorage.setItem('token', d.token);
-    setUser(d.user);
-    return null;
+    try {
+      const d = await api.auth.login(email, password);
+      if (d.error) return d.error;
+      localStorage.setItem('token', d.token);
+      setUser(d.user);
+      return null;
+    } catch (e: any) { return e.message; }
   }
 
   async function register(data: any) {
-    const r = await fetch('/api/auth/register', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const d = await r.json();
-    if (d.error) return d.error;
-    localStorage.setItem('token', d.token);
-    setUser(d.user);
-    return null;
+    try {
+      const d = await api.auth.register(data);
+      if (d.error) return d.error;
+      localStorage.setItem('token', d.token);
+      setUser(d.user);
+      return null;
+    } catch (e: any) { return e.message; }
   }
 
   function logout() { localStorage.removeItem('token'); setUser(null); }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
