@@ -5,7 +5,7 @@ import { useState } from 'react';
 function getMedal(p: number) { if (p >= 100) return '🥇 Алт'; if (p >= 50) return '🥈 Мөнгө'; if (p >= 20) return '🥉 Хүрэл'; return '📚 Суралцагч'; }
 
 export default function Header() {
-  const { user, login, logout } = useAuth();
+  const { user, login, register, logout } = useAuth();
   const nav = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
   const [isReg, setIsReg] = useState(false);
@@ -17,7 +17,7 @@ export default function Header() {
     setErr(''); setBusy(true);
     let e: string | null = null;
     if (isReg) {
-      e = await (window as any).__authRegister?.(form) || await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) }).then(r => r.json()).then(d => d.error || (localStorage.setItem('token', d.token), window.location.reload(), null));
+      e = await register(form);
     } else {
       e = await login(form.email, form.password);
     }
