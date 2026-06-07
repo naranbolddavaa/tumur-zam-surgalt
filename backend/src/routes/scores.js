@@ -13,9 +13,11 @@ router.post('/', authRequired, (req, res) => {
   user.points = (user.points || 0) + score;
   user.correctAnswers = (user.correctAnswers || 0) + score;
   user.totalAnswers = (user.totalAnswers || 0) + total;
-  const chapters = JSON.parse(user.chaptersCompleted || '[]');
+  let chapters = user.chaptersCompleted;
+  if (typeof chapters === 'string') chapters = JSON.parse(chapters || '[]');
+  if (!Array.isArray(chapters)) chapters = [];
   if (!chapters.includes(chapter)) chapters.push(chapter);
-  user.chaptersCompleted = JSON.stringify(chapters);
+  user.chaptersCompleted = chapters;
 
   writeJSON('users', users);
 
@@ -37,7 +39,7 @@ router.get('/leaderboard', (req, res) => {
       points: u.points || 0,
       correctAnswers: u.correctAnswers || 0,
       totalAnswers: u.totalAnswers || 0,
-      chapters: JSON.parse(u.chaptersCompleted || '[]').length
+      chapters: (Array.isArray(u.chaptersCompleted) ? u.chaptersCompleted : typeof u.chaptersCompleted === 'string' ? JSON.parse(u.chaptersCompleted || '[]') : []).length
     }))
     .sort((a, b) => b.points - a.points)
     .slice(0, 50);
@@ -53,7 +55,7 @@ router.get('/progress', authRequired, (req, res) => {
     points: user.points || 0,
     correctAnswers: user.correctAnswers || 0,
     totalAnswers: user.totalAnswers || 0,
-    chapters: JSON.parse(user.chaptersCompleted || '[]')
+    chapters: (Array.isArray(user.chaptersCompleted) ? user.chaptersCompleted : typeof user.chaptersCompleted === 'string' ? JSON.parse(user.chaptersCompleted || '[]') : [])
   });
 });
 

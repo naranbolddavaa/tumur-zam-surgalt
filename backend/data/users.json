@@ -8,10 +8,27 @@
     "org": "ТЗС",
     "role": "admin",
     "blocked": 0,
+    "points": 5,
+    "correctAnswers": 5,
+    "totalAnswers": 6,
+    "chaptersCompleted": [
+      "1-1"
+    ],
+    "registeredAt": "2026-06-07T07:53:04.180Z"
+  },
+  {
+    "id": 2,
+    "email": "test@test.mn",
+    "password": "$2a$10$yOsh4D1lC0ulT5gCxuX/rORnzsQ0RNmnmudjF4U51/da9Bd/UOYFa",
+    "lastName": "???",
+    "firstName": "????",
+    "org": "????",
+    "role": "user",
+    "blocked": 0,
     "points": 0,
     "correctAnswers": 0,
     "totalAnswers": 0,
     "chaptersCompleted": [],
-    "registeredAt": "2026-06-07T07:53:04.180Z"
+    "registeredAt": "2026-06-07T08:18:41.083Z"
   }
 ]
