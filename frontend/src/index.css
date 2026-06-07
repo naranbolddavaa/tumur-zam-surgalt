@@ -1,0 +1,4 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7fb; color: #1e293b; min-height: 100vh; }
+a:hover { opacity: .8; }
+button:hover { opacity: .9; }
